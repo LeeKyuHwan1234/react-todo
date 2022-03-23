@@ -8,9 +8,21 @@ function App() {
     todotext: ''
   });
   const { text } = inputs;
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalText, setmodalText] = useState("");
-  const [modalHead, setmodalHead] = useState("");
+  const [edited, setEdited] = useState({
+    updateText: ''
+  });
+  const [editNum, setEditNum] = useState({
+    updateText: ''
+  });
+  const { updateTexts } = edited;
+  const [editState, setEditStates] = useState(false);
+//update text 부분 업데이트 가능하게 
+const onEditChange = (e) => {
+    setEdited({
+        ...edited,
+        [e.target.name] : e.target.value,
+    })
+}
   const [users, setUser] = useState("");
   //input text 부분 글쓸수있게해
   const onChange = e => {
@@ -55,7 +67,6 @@ function App() {
       fetch('http://localhost:8080/inserttodo',requestOptions)
       .then((users) => {console.log(users)})      
       setUser(users.concat(user));
-
       setInputs({
         text:''
       });
@@ -81,41 +92,52 @@ function App() {
     });
     setUser(removeItem);
   }
-
-    // const onEdit = (e) => {
-    //   const { name, value } = e.target;
-    //   setModalOpen({
-    //     ...modalOpen,
-    //     [name]:value
-    //   });
-    // };
-
-    const openModal = (text,id) => {
-      setModalOpen(true);
-      setmodalText(text)
-      setmodalHead(id);
+  
+  //data delete
+  function onUpdate(id, text) {
+    setEditStates(true);
+    setEditNum(id);
+    setEdited(text);
+  }
+const onUpdate2 = (id, text) => {
+  const requestid = {
+      "id": id,
+      "text": edited.updateText,
     };
-    const closeModal = () => {
-      setModalOpen(false);
+    const requestOptions = {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestid)
     };
-
+    fetch('http://localhost:8080/updatetext',requestOptions)
+    .then((users) => {console.log("fetch : " +users)})
+    .then()
+    setEditStates(false);
+}
+  
   let todoList = Object.values(users).map((user) => (
-    <React.Fragment>
-    <li key={user.id} style={{"list-style": "none"}}>
-      <span>{user.text}</span>&nbsp;
-      <button onClick={()=> openModal(user.text, user.id)}>수정</button>&nbsp;
-      <Modal open={modalOpen} close={closeModal} header="할 일 수정하기" userid={modalHead}>{modalText}</Modal> 
-      <button onClick={()=> onDelete(user.id)}>삭제</button></li>
-      </React.Fragment>
+      
+      <li key={user.id} style={{"list-style": "none"}}>
+      {
+      editState && user.id === editNum ?( <span><input type="text" id={user.id} value={updateTexts} placeholder={edited} onChange={onEditChange}></input></span>) : (<span>{user.text}</span>)
+      }
+      {
+        !editState
+          ? (<button onClick={()=> onUpdate(user.id, user.text)}>수정</button>)
+          : (<button onClick={()=> onUpdate2(user.id, user.text)}>저장</button>
+        )
+      }
+      
+      <button onClick={()=> onDelete(user.id)}>삭제</button></li> 
+      
       )
     );
-  
   
   return (
     <>
     <ul>
-      {todoList}
-      <input name="text" type="text" placeholder="입력하세요" value={text || ''} onChange={onChange} /><button onClick={onCreate}>입력</button>
+      {todoList}<br/>
+      <input name="text" type="text" placeholder="입력하세요" value={text || ''} onChange={onChange} />&nbsp;<button onClick={onCreate}>입력</button>
     </ul>
     </>
   );
