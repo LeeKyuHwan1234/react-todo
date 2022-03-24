@@ -4,26 +4,30 @@ import React from 'react';
 import Modal from './modal';
 
 function App() {
+  const [loading, setloading] =useState(false);
+ 
+  const [users, setUser] = useState("");
   const [inputs, setInputs]= useState({
     todotext: ''
   });
   const { text } = inputs;
+  const {asdf} = users;
   const [edited, setEdited] = useState({
     updateText: ''
   });
   const [editNum, setEditNum] = useState({
     updateText: ''
   });
-  const { updateTexts } = edited;
+  const [updateEdited, setUpdateEdited] = useState('');
+  const { updateTexts } = updateEdited;
   const [editState, setEditStates] = useState(false);
 //update text 부분 업데이트 가능하게 
 const onEditChange = (e) => {
-    setEdited({
-        ...edited,
+    setUpdateEdited({
+        ...updateEdited,
         [e.target.name] : e.target.value,
     })
 }
-  const [users, setUser] = useState("");
   //input text 부분 글쓸수있게해
   const onChange = e => {
     const { name, value } = e.target;
@@ -32,20 +36,7 @@ const onEditChange = (e) => {
       [name]:value
     });
   };
-  //data select 
-  useEffect(()=> {
-    window
-    .fetch('http://localhost:8080/todolist')
-    .then((res) => res.json())
-    .then((users) => {
-      console.log(users)
-      setUser(users);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }, []);
-
+  
   const nextId = useRef(1);
   // data insert
   const onCreate = () => {
@@ -64,9 +55,11 @@ const onEditChange = (e) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestuser)
       };
-      fetch('http://localhost:8080/inserttodo',requestOptions)
+      fetch('http://localhost:8080/todo/insert',requestOptions)
       .then((users) => {console.log(users)})      
+     
       setUser(users.concat(user));
+      setloading(false);
       setInputs({
         text:''
       });
@@ -84,55 +77,70 @@ const onEditChange = (e) => {
       body: JSON.stringify(requestid)
     };
     console.log(requestOptions.body)
-    fetch('http://localhost:8080/deletetodo',requestOptions)
+    fetch('http://localhost:8080//todo/delete',requestOptions)
     .then((users) => {console.log("fetch : " +users)})      
     
-    const removeItem = (Object.values(users)).filter((user) => {
-       return user.id !== id 
-    });
-    setUser(removeItem);
+    // const removeItem = (Object.values(users)).filter((user) => {
+    //    return user.id !== id 
+    // });
+    // setUser(removeItem);
   }
   
   //data delete
-  function onUpdate(id, text) {
-    setEditStates(true);
-    setEditNum(id);
-    setEdited(text);
-  }
-const onUpdate2 = (id, text) => {
+function onUpdate(id, text) {
+  setEditStates(true);
+  setEditNum(id);
+  setEdited(text);
+}
+
+const onUpdate2 = (id) => {
   const requestid = {
       "id": id,
-      "text": edited.updateText,
+      "text": Object.values(updateEdited)[0],
     };
     const requestOptions = {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(requestid)
     };
-    fetch('http://localhost:8080/updatetext',requestOptions)
+    fetch('http://localhost:8080/todo/updatetext',requestOptions)
     .then((users) => {console.log("fetch : " +users)})
     .then()
     setEditStates(false);
-}
-  
+    console.log(requestid.text)
+    //  const updateItem = (Object.values(users)).map((user) => { 
+    //    return id === user.id ? user.text : updateTexts   
+    //  });
+    //  setUser(updateItem)
+  }
+//data select 
+useEffect(()=> {
+  fetch('http://localhost:8080/todo/select')
+  .then((res) => res.json())
+  .then((users) => {
+    console.log(users)
+    setloading(false);
+    setUser(users);
+  })
+}, []);
+
   let todoList = Object.values(users).map((user) => (
       
       <li key={user.id} style={{"list-style": "none"}}>
       {
-      editState && user.id === editNum ?( <span><input type="text" id={user.id} value={updateTexts} placeholder={edited} onChange={onEditChange}></input></span>) : (<span>{user.text}</span>)
+      editState && user.id === editNum ?(<span><input type="text" id={user.id} value={updateTexts} placeholder={edited} onChange={onEditChange}></input></span>):(<span>{user.text}</span>)
       }
       {
-        !editState
-          ? (<button onClick={()=> onUpdate(user.id, user.text)}>수정</button>)
-          : (<button onClick={()=> onUpdate2(user.id, user.text)}>저장</button>
-        )
-      }
+        !editState 
+          ?  (<button onClick={()=> onUpdate(user.id, user.text)}>수정</button>)
+          : (<button onClick={()=> onUpdate2(user.id)}>저장</button>)
+        }
       
       <button onClick={()=> onDelete(user.id)}>삭제</button></li> 
       
       )
     );
-  
+  if (loading) return <div>Loading...</div>;
   return (
     <>
     <ul>
