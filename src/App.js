@@ -32,7 +32,6 @@ function App() {
     fetch('http://localhost:8080/todo/select')
           .then((res) => res.json())
           .then((users) => {
-            console.log(users)
             setloading(false);
             setUser(users);
           }) 
@@ -69,7 +68,7 @@ function App() {
     }
     else {
       fetch('http://localhost:8080/todo/insert', requestOptions)
-        .then((users) => { 
+        .then(() => { 
           select()
       })
       nextId.current += 1;
@@ -86,9 +85,8 @@ function App() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(requestid)
     };
-    console.log(requestOptions.body)
     fetch('http://localhost:8080/todo/delete', requestOptions)
-      .then((users) => { 
+      .then(() => { 
         select()
     })
 
@@ -123,7 +121,6 @@ function App() {
         select()
     })  
     setEditStates(false);
-    console.log(requestid.text)
     }
     //  const updateItem = (Object.values(users)).map((user) => { 
     //    return id === user.id ? user.text : updateTexts   
@@ -152,7 +149,6 @@ function App() {
       "id": id,
       "done": false
     };
-    console.log(requestid.id)
     const requestOptions = {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -173,8 +169,8 @@ function App() {
     <div className='todoItem'>
       {
         (user.done === "false") 
-        ?( <RiCheckboxBlankCircleLine className='checkedblankbtn' onClick={()=>onUpdateDoneFalsetoTrue(user.id)}></RiCheckboxBlankCircleLine>) 
-        : (<RiCheckboxCircleLine className='checkedbtn' onClick={()=>onUpdateDoneTruetoFalse(user.id)}></RiCheckboxCircleLine>)
+        ?( <RiCheckboxBlankCircleLine size="50" className='checkedblankbtn' onClick={()=>onUpdateDoneFalsetoTrue(user.id)}></RiCheckboxBlankCircleLine>) 
+        : (<RiCheckboxCircleLine size="50"className='checkedbtn' onClick={()=>onUpdateDoneTruetoFalse(user.id)}></RiCheckboxCircleLine>)
       }
       <li key={user.id} className="todoli" style={{"list-style": "none"}}>
         {
@@ -186,10 +182,10 @@ function App() {
         }         
         {
           editState && (user.id === editNum)
-            ? (<RiSave3Fill  className="savebtn" size="25" color="green"onClick={() => onUpdate2(user.id)}></RiSave3Fill>)
-            : (<MdEdit  className="modbtn" size="25" color="blue" onClick={() => onUpdate(user.id, user.text)}></MdEdit>)
+            ? (<RiSave3Fill  className="savebtn" size="35" color="green"onClick={() => onUpdate2(user.id)}></RiSave3Fill>)
+            : (<MdEdit  className="modbtn" size="35" color="blue" onClick={() => onUpdate(user.id, user.text)}></MdEdit>)
         }
-        <MdDelete  className="delbtn" size="25" color="red" onClick={() => onDelete(user.id)}>삭제 </MdDelete></li>
+        <MdDelete  className="delbtn" size="35" color="red" onClick={() => onDelete(user.id)}>삭제 </MdDelete></li>
     </div>
     )
   );
