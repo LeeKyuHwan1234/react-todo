@@ -28,6 +28,15 @@ function App() {
       [e.target.name]: e.target.value,
     })
   }
+  function select() {
+    fetch('http://localhost:8080/todo/select')
+          .then((res) => res.json())
+          .then((users) => {
+            console.log(users)
+            setloading(false);
+            setUser(users);
+          }) 
+  }
   //input text 부분 글쓸수있게해
   const onChange = e => {
     const { name, value } = e.target;
@@ -60,16 +69,13 @@ function App() {
     }
     else {
       fetch('http://localhost:8080/todo/insert', requestOptions)
-      .then((users) => { console.log(users) })
-      setUser(users.concat(user));
-      setloading(false);
-      setInputs({
-        text: ''
-      });
+        .then((users) => { 
+          select()
+      })
       nextId.current += 1;
     }
   }
-
+ 
   //data delete
   function onDelete(id) {
     const requestid = {
@@ -82,7 +88,9 @@ function App() {
     };
     console.log(requestOptions.body)
     fetch('http://localhost:8080/todo/delete', requestOptions)
-      .then((users) => { console.log("fetch : " + users) })
+      .then((users) => { 
+        select()
+    })
 
     // const removeItem = (Object.values(users)).filter((user) => {
     //    return user.id !== id 
@@ -111,8 +119,9 @@ function App() {
     }
     else {
     fetch('http://localhost:8080/todo/updatetext', requestOptions)
-      .then((users) => { console.log("fetch : " + users) })
-      .then()
+      .then((users) => { 
+        select()
+    })  
     setEditStates(false);
     console.log(requestid.text)
     }
@@ -134,7 +143,9 @@ function App() {
       body: JSON.stringify(requestid)
     };
     fetch('http://localhost:8080/todo/updatedone', requestOptions)
-      .then((users) => { console.log("fetch : " + users) })
+      .then((users) => { 
+        select()
+    })
   }
   const onUpdateDoneTruetoFalse = (id) => {
     const requestid = {
@@ -148,18 +159,14 @@ function App() {
       body: JSON.stringify(requestid)
     };
     fetch('http://localhost:8080/todo/updatedone', requestOptions)
-      .then((users) => { console.log("fetch : " + users) })
+      .then((users) => { 
+        select()
+    })
   }
 
   //data select 
   useEffect(() => {
-    fetch('http://localhost:8080/todo/select')
-      .then((res) => res.json())
-      .then((users) => {
-        console.log(users)
-        setloading(false);
-        setUser(users);
-      })
+    select()
     }, []);
 
   let todoList = Object.values(users).map((user) => (
