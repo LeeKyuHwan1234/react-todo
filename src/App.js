@@ -1,6 +1,8 @@
 import './App.css';
 import { useEffect, useState, useRef } from 'react';
 import React from 'react';
+import { MdEdit,MdDelete, MdCheckBox } from "react-icons/md";
+import { RiSave3Fill } from "react-icons/ri";
 
 function App() {
   const [loading, setloading] = useState(false);
@@ -19,6 +21,7 @@ function App() {
   const [updateEdited, setUpdateEdited] = useState('');
   const { updateTexts } = updateEdited;
   const [editState, setEditStates] = useState(false);
+  const [toggleState, setToggleState] = useState("");
   //update text 부분 업데이트 가능하게 
   const onEditChange = (e) => {
     setUpdateEdited({
@@ -111,6 +114,27 @@ function App() {
     //  });
     //  setUser(updateItem)
   }
+
+  const onToggle = (id) => {
+    const requestid = {
+      "id": id,
+      "done": false
+    };
+    console.log(requestid.id)
+    const requestOptions = {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestid)
+    };
+    fetch('http://localhost:8080/todo/updatedone', requestOptions)
+      .then((users) => { console.log("fetch : " + users) })
+      .then()
+    setEditStates(false);
+    //  const updateItem = (Object.values(users)).map((user) => { 
+    //    return id === user.id ? user.text : updateTexts   
+    //  });
+    //  setUser(updateItem)
+  }
   //data select 
   useEffect(() => {
     fetch('http://localhost:8080/todo/select')
@@ -120,34 +144,39 @@ function App() {
         setloading(false);
         setUser(users);
       })
-  }, []);
+    }, []);
 
   let todoList = Object.values(users).map((user) => (
     <div className='todoItem'>
-      <li key={user.id} style={{ "list-style": "none" }}>
+      <li key={user.id} className="todoli" style={{"list-style": "none"}}>
         {
-          editState && user.id === editNum ? (<span><input className="btn1234"  type="text" id={user.text} value={updateTexts} placeholder={edited} onChange={onEditChange}></input></span>) : (<span className="todotext">{user.text}</span>)
+          editState && user.id === editNum 
+          ?(<span><input className="inputtext"  type="text" id={user.text} value={updateTexts} placeholder={edited} onChange={onEditChange}></input></span>) 
+          :(<span onClick={()=> onToggle(user.id)} className="todotext">{user.text}</span>)
         }
+         
         {
-          !editState
-            ? (<button onClick={() => onUpdate(user.id, user.text)}>수정</button>)
-            : (<button onClick={() => onUpdate2(user.id)}>저장</button>)
-        }
-        <button onClick={() => onDelete(user.id)}>삭제</button></li>
-      </div>
-  )
+          editState && (user.id === editNum)
+            ? (<RiSave3Fill key={user.id} className="savebtn" size="25" color="green"onClick={() => onUpdate2(user.id)}></RiSave3Fill>)
+            : (<MdEdit key={user.id} className="modbtn" size="25" color="blue" onClick={() => onUpdate(user.id, user.text)}></MdEdit>)
+            
+          }
+        <MdDelete key={user.id} className="delbtn" size="25" color="red" onClick={() => onDelete(user.id)}>삭제 </MdDelete></li>
+    </div>
+    )
   );
   if (loading) return <div>Loading...</div>;
   return (
     <>
       <div className='todoTemplate'>
-        <div className='todoHeader'>TODO-LIST</div>
+        <div className='todoHeader'>TODO  LIST</div>
         <div className='todoList'>
+          <div className="inputlist"><input name="text" type="text" placeholder="할 일을 입력하세요" value={text || ''} onChange={onChange} />&nbsp;<MdEdit className="inputicon" onClick={onCreate}>입력</MdEdit>
+          </div>
           <ul>
           {todoList}<br />
-          <input name="text" type="text" placeholder="입력하세요" value={text || ''} onChange={onChange} />&nbsp;<button onClick={onCreate}>입력</button>
-      </ul>
-      </div>
+        </ul>
+        </div>
       </div>
     </>
   );

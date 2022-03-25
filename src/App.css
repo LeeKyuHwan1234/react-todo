@@ -1,25 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap');
 
 .todoTemplate {
-  width: 512px;
-  height: 1000px;
-  text-align: center;
-  position: relative;
-  background: white;
-  border-radius: 30px;
-  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.04);
-  margin: 0 auto;
-  margin-top: 96px;
-  margin-bottom: 32px;
-  display: flex;
-  flex-direction: column;
-  background-color:MediumPurple;
-  font-size : 50px;
-  border:5px solid white;
+    width: 800px;
+    height: 1200px;
+    text-align: center;
+    position: relative;
+    background: white;
+    border-radius: 30px;
+    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.04);
+    margin: 0 auto;
+    margin-top: 96px;
+    margin-bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    background-color:MediumPurple;
+    font-size : 50px;
+    border:5px solid white;
 }
 
 .todoHeader {
-  margin: 40px;
+    margin: 40px 0px 0px 0px;
     color:white;
     border-radius: 20px;
     height: 70px;
@@ -29,32 +29,66 @@
 
 .todoList {
     flex: 1;
-    margin-inline:30px;
     margin-bottom:30px;
-    padding: 20px 32px;
+    padding: 20px 32px 50px 0px;
     padding-bottom: 48px;
-    overflow-y: auto;
     border-radius:20px;
 }
 .todoItem {
+    display: flex;
+    align-items: center;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-right :20px;
+    background-color:white;
+    border-radius:15px;
+    border:5px solid;
+    margin:10px; 
+    font-family: 'Black Han Sans', sans-serif; 
+    justify-content: flex-end;
+  }
+.inputtext {
+  flex: 1;
+    font-size: 24px;
+    color: black;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    font-family: 'Black Han Sans', sans-serif;
+}
+.todotext {
+    flex: 1;
+    font-size: 25px;
+    color: black;
+    margin-right: 150px;
+    font-family: 'Black Han Sans', sans-serif;
+  }
+.delbtn {
+  margin-left:30px;
+}
+.savebtn {
+  margin-left:30px;
+}
+.modbtn {
+  margin-left:50px;
+}
+.inputlist {
   display: flex;
   align-items: center;
-  padding-top: 50px;
-  padding-bottom: 50px;
-  padding-left :20px;
-  padding-right :20px;
   background-color:white;
   border-radius:15px;
   border:5px solid;
-  margin:10px; 
-  font-family: 'Black Han Sans', sans-serif;
-  
+  margin:0px 110px 0px 110px; 
+  font-family: 'Black Han Sans', sans-serif; 
+  justify-content: center;
 }
 
-.todotext {
-  flex: 1;
-  font-size: 21px;
-  color: red;
-  font-family: 'Black Han Sans', sans-serif;
+input {
+  text-align: center;
+  width: 300px;
+  height: 32px;
+  font-size: 25px;
+  border: 0;
+  border-radius: 15px;
+  outline: none;
+  padding-left: 10px;
 }
-
