@@ -1,8 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Nanum+Gothic:wght@700&display=swap');
 .todoTemplate {
     width: 800px;
-    height: 1200px;
+    height: auto;
     text-align: center;
     position: relative;
     background: white;
@@ -30,8 +29,7 @@
 .todoList {
     flex: 1;
     margin-bottom:30px;
-    padding: 20px 32px 50px 0px;
-    padding-bottom: 48px;
+    padding: 20px 32px 0px 0px;
     border-radius:20px;
 }
 .todoItem {
@@ -44,24 +42,32 @@
     border-radius:15px;
     border:5px solid;
     margin:10px; 
-    font-family: 'Black Han Sans', sans-serif; 
-    justify-content: flex-end;
+    font-family: 'Nanum Gothic', sans-serif;
   }
 .inputtext {
   flex: 1;
-    font-size: 24px;
+    font-size: 25px;
     color: black;
-    margin-right: 20px;
-    margin-bottom: 20px;
-    font-family: 'Black Han Sans', sans-serif;
+    margin-right: 50px;
+    font-family: 'Nanum Gothic', sans-serif;
 }
 .todotext {
     flex: 1;
     font-size: 25px;
     color: black;
-    margin-right: 150px;
-    font-family: 'Black Han Sans', sans-serif;
+    margin-right: 50px;
+    font-family: 'Nanum Gothic', sans-serif;
+    text-align: center;
   }
+.todochecktext {
+  flex: 1;
+  font-size: 25px;
+  color: gray;
+  margin-right: 50px;
+  font-family: 'Nanum Gothic', sans-serif;
+  text-align: center;
+  text-decoration:line-through
+}
 .delbtn {
   margin-left:30px;
 }
@@ -78,10 +84,9 @@
   border-radius:15px;
   border:5px solid;
   margin:0px 110px 0px 110px; 
-  font-family: 'Black Han Sans', sans-serif; 
+  font-family: 'Nanum Gothic', sans-serif;
   justify-content: center;
 }
-
 input {
   text-align: center;
   width: 300px;
@@ -91,4 +96,13 @@ input {
   border-radius: 15px;
   outline: none;
   padding-left: 10px;
+}
+.checkedblankbtn {
+margin-right: 30px;
+float:left;
+}
+.checkedbtn {
+  margin-right: 30px;
+  float:left;
+  color:green;
 }

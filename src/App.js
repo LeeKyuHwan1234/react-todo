@@ -2,7 +2,7 @@ import './App.css';
 import { useEffect, useState, useRef } from 'react';
 import React from 'react';
 import { MdEdit,MdDelete, MdCheckBox } from "react-icons/md";
-import { RiSave3Fill } from "react-icons/ri";
+import { RiSave3Fill, RiCheckboxBlankCircleLine, RiCheckboxCircleLine } from "react-icons/ri";
 
 function App() {
   const [loading, setloading] = useState(false);
@@ -21,7 +21,6 @@ function App() {
   const [updateEdited, setUpdateEdited] = useState('');
   const { updateTexts } = updateEdited;
   const [editState, setEditStates] = useState(false);
-  const [toggleState, setToggleState] = useState("");
   //update text 부분 업데이트 가능하게 
   const onEditChange = (e) => {
     setUpdateEdited({
@@ -56,15 +55,19 @@ function App() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(requestuser)
     };
-    fetch('http://localhost:8080/todo/insert', requestOptions)
+    if(text == "" || text == undefined || text == null){
+      alert("할 일을 입력해주세요")
+    }
+    else {
+      fetch('http://localhost:8080/todo/insert', requestOptions)
       .then((users) => { console.log(users) })
-
-    setUser(users.concat(user));
-    setloading(false);
-    setInputs({
-      text: ''
-    });
-    nextId.current += 1;
+      setUser(users.concat(user));
+      setloading(false);
+      setInputs({
+        text: ''
+      });
+      nextId.current += 1;
+    }
   }
 
   //data delete
@@ -85,8 +88,7 @@ function App() {
     //    return user.id !== id 
     // });
     // setUser(removeItem);
-  }
-
+   }
   //data delete
   function onUpdate(id, text) {
     setEditStates(true);
@@ -104,18 +106,37 @@ function App() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(requestid)
     };
+    if(requestid.text == "" || requestid.text == undefined || requestid.text == null){
+      alert("할 일을 입력해주세요")
+    }
+    else {
     fetch('http://localhost:8080/todo/updatetext', requestOptions)
       .then((users) => { console.log("fetch : " + users) })
       .then()
     setEditStates(false);
     console.log(requestid.text)
+    }
     //  const updateItem = (Object.values(users)).map((user) => { 
     //    return id === user.id ? user.text : updateTexts   
     //  });
     //  setUser(updateItem)
   }
 
-  const onToggle = (id) => {
+  const onUpdateDoneFalsetoTrue = (id) => {
+    const requestid = {
+      "id": id,
+      "done": true
+    };
+    console.log(requestid.id)
+    const requestOptions = {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestid)
+    };
+    fetch('http://localhost:8080/todo/updatedone', requestOptions)
+      .then((users) => { console.log("fetch : " + users) })
+  }
+  const onUpdateDoneTruetoFalse = (id) => {
     const requestid = {
       "id": id,
       "done": false
@@ -128,13 +149,8 @@ function App() {
     };
     fetch('http://localhost:8080/todo/updatedone', requestOptions)
       .then((users) => { console.log("fetch : " + users) })
-      .then()
-    setEditStates(false);
-    //  const updateItem = (Object.values(users)).map((user) => { 
-    //    return id === user.id ? user.text : updateTexts   
-    //  });
-    //  setUser(updateItem)
   }
+
   //data select 
   useEffect(() => {
     fetch('http://localhost:8080/todo/select')
@@ -148,20 +164,25 @@ function App() {
 
   let todoList = Object.values(users).map((user) => (
     <div className='todoItem'>
+      {
+        (user.done === "false") 
+        ?( <RiCheckboxBlankCircleLine className='checkedblankbtn' onClick={()=>onUpdateDoneFalsetoTrue(user.id)}></RiCheckboxBlankCircleLine>) 
+        : (<RiCheckboxCircleLine className='checkedbtn' onClick={()=>onUpdateDoneTruetoFalse(user.id)}></RiCheckboxCircleLine>)
+      }
       <li key={user.id} className="todoli" style={{"list-style": "none"}}>
         {
           editState && user.id === editNum 
           ?(<span><input className="inputtext"  type="text" id={user.text} value={updateTexts} placeholder={edited} onChange={onEditChange}></input></span>) 
-          :(<span onClick={()=> onToggle(user.id)} className="todotext">{user.text}</span>)
-        }
-         
+          :((user.done ==="false")
+            ?(<span className="todotext">{user.text}</span>)
+            :(<span className="todochecktext">{user.text}</span>))       
+        }         
         {
           editState && (user.id === editNum)
-            ? (<RiSave3Fill key={user.id} className="savebtn" size="25" color="green"onClick={() => onUpdate2(user.id)}></RiSave3Fill>)
-            : (<MdEdit key={user.id} className="modbtn" size="25" color="blue" onClick={() => onUpdate(user.id, user.text)}></MdEdit>)
-            
-          }
-        <MdDelete key={user.id} className="delbtn" size="25" color="red" onClick={() => onDelete(user.id)}>삭제 </MdDelete></li>
+            ? (<RiSave3Fill  className="savebtn" size="25" color="green"onClick={() => onUpdate2(user.id)}></RiSave3Fill>)
+            : (<MdEdit  className="modbtn" size="25" color="blue" onClick={() => onUpdate(user.id, user.text)}></MdEdit>)
+        }
+        <MdDelete  className="delbtn" size="25" color="red" onClick={() => onDelete(user.id)}>삭제 </MdDelete></li>
     </div>
     )
   );
@@ -171,7 +192,9 @@ function App() {
       <div className='todoTemplate'>
         <div className='todoHeader'>TODO  LIST</div>
         <div className='todoList'>
-          <div className="inputlist"><input name="text" type="text" placeholder="할 일을 입력하세요" value={text || ''} onChange={onChange} />&nbsp;<MdEdit className="inputicon" onClick={onCreate}>입력</MdEdit>
+          <div className="inputlist">
+            <input className='inputlistst' name="text" type="text" placeholder="할 일을 입력하세요" value={text || ''} onChange={onChange} />&nbsp;
+            <MdEdit className="inputicon" onClick={onCreate}>입력</MdEdit>
           </div>
           <ul>
           {todoList}<br />
@@ -181,5 +204,6 @@ function App() {
     </>
   );
 }
+
 export default App;
 
